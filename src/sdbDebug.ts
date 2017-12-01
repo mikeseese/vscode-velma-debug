@@ -10,7 +10,7 @@ import {
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { MockRuntime, MockBreakpoint } from './mockRuntime';
+import { SdbRuntimeAdapter, SdbBreakpoint } from './sdbRuntimeAdapter';
 
 
 /**
@@ -28,13 +28,13 @@ interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
   trace?: boolean;
 }
 
-class MockDebugSession extends LoggingDebugSession {
+class SolidityDebugSession extends LoggingDebugSession {
 
   // we don't support multiple threads, so we can use a hardcoded ID for the default thread
   private static THREAD_ID = 1;
 
   // a Mock runtime (or debugger)
-  private _runtime: MockRuntime;
+  private _runtime: SdbRuntimeAdapter;
 
   private _variableHandles = new Handles<string>();
 
@@ -49,22 +49,22 @@ class MockDebugSession extends LoggingDebugSession {
     this.setDebuggerLinesStartAt1(false);
     this.setDebuggerColumnsStartAt1(false);
 
-    this._runtime = new MockRuntime();
+    this._runtime = new SdbRuntimeAdapter();
 
     // setup event handlers
     this._runtime.on('stopOnEntry', () => {
-      this.sendEvent(new StoppedEvent('entry', MockDebugSession.THREAD_ID));
+      this.sendEvent(new StoppedEvent('entry', SolidityDebugSession.THREAD_ID));
     });
     this._runtime.on('stopOnStep', () => {
-      this.sendEvent(new StoppedEvent('step', MockDebugSession.THREAD_ID));
+      this.sendEvent(new StoppedEvent('step', SolidityDebugSession.THREAD_ID));
     });
     this._runtime.on('stopOnBreakpoint', () => {
-      this.sendEvent(new StoppedEvent('breakpoint', MockDebugSession.THREAD_ID));
+      this.sendEvent(new StoppedEvent('breakpoint', SolidityDebugSession.THREAD_ID));
     });
     this._runtime.on('stopOnException', () => {
-      this.sendEvent(new StoppedEvent('exception', MockDebugSession.THREAD_ID));
+      this.sendEvent(new StoppedEvent('exception', SolidityDebugSession.THREAD_ID));
     });
-    this._runtime.on('breakpointValidated', (bp: MockBreakpoint) => {
+    this._runtime.on('breakpointValidated', (bp: SdbBreakpoint) => {
       this.sendEvent(new BreakpointEvent('changed', <DebugProtocol.Breakpoint>{ verified: bp.verified, id: bp.id }));
     });
     this._runtime.on('output', (text, filePath, line, column) => {
@@ -144,7 +144,7 @@ class MockDebugSession extends LoggingDebugSession {
     // runtime supports now threads so just return a default thread.
     response.body = {
       threads: [
-        new Thread(MockDebugSession.THREAD_ID, "thread 1")
+        new Thread(SolidityDebugSession.THREAD_ID, "thread 1")
       ]
     };
     this.sendResponse(response);
@@ -276,4 +276,4 @@ class MockDebugSession extends LoggingDebugSession {
   }
 }
 
-DebugSession.run(MockDebugSession);
+DebugSession.run(SolidityDebugSession);
