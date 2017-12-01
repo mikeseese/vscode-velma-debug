@@ -1,0 +1,56 @@
+{
+  "name": "vscode-sdb-debug",
+  "version": "0.0.1",
+  "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/seese-ethereum/vscode-sdb-debug.git"
+  },
+  "keywords": [
+    "solidity",
+    "debug",
+    "debugger",
+    "sol",
+    "eth",
+    "ethereum",
+    "vs",
+    "vscode",
+    "code",
+    "visual",
+    "studio",
+    "visual",
+    "studio",
+    "code",
+    "extension",
+    "adapter",
+    "sdb"
+  ],
+  "author": {
+    "name": "Mike Seese",
+    "email": "seesemichaelj@gmail.com"
+  },
+  "categories": [
+    "Debuggers"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/seese-ethereum/vscode-sdb-debug/issues"
+  },
+  "homepage": "https://gitlab.com/seese-ethereum/vscode-sdb-debug#README",
+  "contributes": {
+    "breakpoints":[{
+      "language": "solidity"
+    }],
+    "debuggers": [{
+      "type": "sdb",
+      "label": "Solidity Debug",
+
+      "program": "./bin/sdbDebug.js",
+      "runtime": "node"
+    }]
+  }
+}
