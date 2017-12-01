@@ -58,9 +58,11 @@
   },
   "dependencies": {
     "events": "^1.1.1",
-    "fs": "0.0.1-security",
     "path": "^0.12.7",
     "vscode-debugadapter": "^1.24.0",
     "vscode-debugprotocol": "^1.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.53"
   }
 }
