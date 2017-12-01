@@ -42,15 +42,22 @@
   },
   "homepage": "https://gitlab.com/seese-ethereum/vscode-sdb-debug#README",
   "contributes": {
-    "breakpoints":[{
-      "language": "solidity"
-    }],
-    "debuggers": [{
-      "type": "sdb",
-      "label": "Solidity Debug",
-
-      "program": "./bin/sdbDebug.js",
-      "runtime": "node"
-    }]
+    "breakpoints": [
+      {
+        "language": "solidity"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "sdb",
+        "label": "Solidity Debug",
+        "program": "./bin/sdbDebug.js",
+        "runtime": "node"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-debugadapter": "^1.24.0",
+    "vscode-debugprotocol": "^1.24.0"
   }
 }
