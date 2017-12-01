@@ -51,7 +51,7 @@
       {
         "type": "sdb",
         "label": "Solidity Debug",
-        "program": "./bin/sdbDebug.js",
+        "program": "./out/sdbDebug.js",
         "runtime": "node"
       }
     ]
