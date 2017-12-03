@@ -1,7 +1,3 @@
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-
 import {
   Logger, logger,
   DebugSession, LoggingDebugSession,
@@ -34,7 +30,7 @@ class SolidityDebugSession extends LoggingDebugSession {
   private static THREAD_ID = 1;
 
   // a Mock runtime (or debugger)
-  private _runtime: SdbRuntimeAdapter;
+  private _runtime: LibSdb;
 
   private _variableHandles = new Handles<string>();
 
@@ -49,7 +45,7 @@ class SolidityDebugSession extends LoggingDebugSession {
     this.setDebuggerLinesStartAt1(false);
     this.setDebuggerColumnsStartAt1(false);
 
-    this._runtime = new SdbRuntimeAdapter();
+    this._runtime = new LibSdb();
 
     // setup event handlers
     this._runtime.on('stopOnEntry', () => {
@@ -111,7 +107,9 @@ class SolidityDebugSession extends LoggingDebugSession {
     logger.setup(args.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
     // start the program in the runtime
-    this._runtime.start(args.program, !!args.stopOnEntry);
+    this._runtime.attach("localhost", 8455, () => { // TODO: get args from better place
+      this._runtime.start(!!args.stopOnEntry);
+    });
 
     this.sendResponse(response);
   }
@@ -235,7 +233,8 @@ class SolidityDebugSession extends LoggingDebugSession {
     this.sendResponse(response);
   }
 
-  protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
+  // TODO: allow for evaluation/arbitrary code execution
+  /*protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
 
     let reply: string | undefined = undefined;
 
@@ -267,7 +266,7 @@ class SolidityDebugSession extends LoggingDebugSession {
       variablesReference: 0
     };
     this.sendResponse(response);
-  }
+  }*/
 
   //---- helpers
 
