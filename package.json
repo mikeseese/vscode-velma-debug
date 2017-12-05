@@ -1,14 +1,12 @@
 {
   "name": "vscode-sdb-debug",
+  "displayName": "Solidity Debug",
   "version": "0.0.1",
+  "publisher": "seesemichaelj",
   "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@gitlab.com/seese-ethereum/vscode-sdb-debug.git"
+  "author": {
+    "name": "Mike Seese",
+    "email": "seesemichaelj@gmail.com"
   },
   "keywords": [
     "solidity",
@@ -29,18 +27,44 @@
     "adapter",
     "sdb"
   ],
-  "author": {
-    "name": "Mike Seese",
-    "email": "seesemichaelj@gmail.com"
+  "engines": {
+    "vscode": "^1.17.0",
+    "node": "^7.9.0"
   },
   "categories": [
     "Debuggers"
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://gitlab.com/seese-ethereum/vscode-sdb-debug/issues"
+  "dependencies": {
+    "circular-json": "^0.4.0",
+    "events": "^1.1.1",
+    "path": "^0.12.7",
+    "vscode-debugadapter": "^1.25.0",
+    "vscode-debugprotocol": "^1.25.0"
   },
-  "homepage": "https://gitlab.com/seese-ethereum/vscode-sdb-debug#README",
+  "devDependencies": {
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.54",
+    "mocha": "^3.5.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3",
+    "vsce": "^1.34.0",
+    "vscode": "^1.1.6",
+    "vscode-debugadapter-testsupport": "^1.25.0"
+  },
+  "scripts": {
+    "prepublish": "tsc -p ./src",
+    "compile": "tsc -p ./src",
+    "tslint": "tslint ./src/**/*.ts",
+    "watch": "tsc -w -p ./src",
+    "test": "mocha -u tdd ./out/tests/",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "main": "./out/vscode-sdb-debug/src/sdbDebug",
+  "activationEvents": [
+    "onDebug"
+  ],
   "contributes": {
     "breakpoints": [
       {
@@ -52,17 +76,56 @@
         "type": "sdb",
         "label": "Solidity Debug",
         "program": "./out/sdbDebug.js",
-        "runtime": "node"
+        "runtime": "node",
+        "configurationAttributes": {
+          "launch": {
+            "required": [],
+            "properties": {
+              "stopOnEntry": {
+                "type": "boolean",
+                "description": "Automatically stop after launch.",
+                "default": true
+              },
+              "trace": {
+                "type": "boolean",
+                "description": "Enable logging of the Debug Adapter Protocol.",
+                "default": true
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "sdb",
+            "request": "launch",
+            "name": "Debug Solidity",
+            "stopOnEntry": false
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Solidity: Launch",
+            "description": "Runs the Solidity debugger (sdb) and attaches to a TestRPC instance",
+            "body": {
+              "type": "sdb",
+              "request": "launch",
+              "name": "Debug Solidity",
+              "stopOnEntry": false
+            }
+          }
+        ],
+        "variables": {}
       }
     ]
   },
-  "dependencies": {
-    "events": "^1.1.1",
-    "path": "^0.12.7",
-    "vscode-debugadapter": "^1.24.0",
-    "vscode-debugprotocol": "^1.24.0"
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/seese-ethereum/vscode-sdb-debug.git"
   },
-  "devDependencies": {
-    "@types/node": "^8.0.53"
-  }
+  "bugs": {
+    "url": "https://gitlab.com/seese-ethereum/vscode-sdb-debug/issues"
+  },
+  "homepage": "https://gitlab.com/seese-ethereum/vscode-sdb-debug#README"
 }
