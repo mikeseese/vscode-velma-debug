@@ -16,8 +16,6 @@ import { LibSdb, SdbBreakpoint } from '../../solidity-debugger/libsdb';
  * The interface should always match this schema.
  */
 interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
-  /** An absolute path to the "program" to debug. */
-  program: string;
   /** Automatically stop target after launch. If not specified, target does not stop. */
   stopOnEntry?: boolean;
   /** enable logging the Debug Adapter Protocol */
@@ -39,7 +37,7 @@ class SolidityDebugSession extends LoggingDebugSession {
    * We configure the default implementation of a debug adapter here.
    */
   public constructor() {
-    super("mock-debug.txt");
+    super("sdb-debug.txt");
 
     // this debugger uses zero-based lines and columns
     this.setDebuggerLinesStartAt1(false);
@@ -234,11 +232,11 @@ class SolidityDebugSession extends LoggingDebugSession {
   }
 
   // TODO: allow for evaluation/arbitrary code execution
-  /*protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
+  protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
 
     let reply: string | undefined = undefined;
 
-    if (args.context === 'repl') {
+    /*if (args.context === 'repl') {
       // 'evaluate' supports to create and delete breakpoints from the 'repl':
       const matches = /new +([0-9]+)/.exec(args.expression);
       if (matches && matches.length === 2) {
@@ -259,14 +257,14 @@ class SolidityDebugSession extends LoggingDebugSession {
           }
         }
       }
-    }
+    }*/
 
     response.body = {
       result: reply ? reply : `evaluate(context: '${args.context}', '${args.expression}')`,
       variablesReference: 0
     };
     this.sendResponse(response);
-  }*/
+  }
 
   //---- helpers
 
