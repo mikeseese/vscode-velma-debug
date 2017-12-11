@@ -49,8 +49,14 @@ class SolidityDebugSession extends LoggingDebugSession {
     this._runtime.on('stopOnEntry', () => {
       this.sendEvent(new StoppedEvent('entry', SolidityDebugSession.THREAD_ID));
     });
-    this._runtime.on('stopOnStep', () => {
+    this._runtime.on('stopOnStepOver', () => {
       this.sendEvent(new StoppedEvent('step', SolidityDebugSession.THREAD_ID));
+    });
+    this._runtime.on('stopOnStepIn', () => {
+      this.sendEvent(new StoppedEvent('stepin', SolidityDebugSession.THREAD_ID));
+    });
+    this._runtime.on('stopOnStepOut', () => {
+      this.sendEvent(new StoppedEvent('stepout', SolidityDebugSession.THREAD_ID));
     });
     this._runtime.on('stopOnBreakpoint', () => {
       this.sendEvent(new StoppedEvent('breakpoint', SolidityDebugSession.THREAD_ID));
@@ -212,22 +218,38 @@ class SolidityDebugSession extends LoggingDebugSession {
   }
 
   protected continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): void {
+    // forward continue until breakpoint
     this._runtime.continue();
     this.sendResponse(response);
   }
 
   protected reverseContinueRequest(response: DebugProtocol.ReverseContinueResponse, args: DebugProtocol.ReverseContinueArguments) : void {
+    // backward continue until breakpoint
     this._runtime.continue(true);
     this.sendResponse(response);
    }
 
   protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
-    this._runtime.step();
+    // forward 1 step
+    this._runtime.stepOver();
     this.sendResponse(response);
   }
 
   protected stepBackRequest(response: DebugProtocol.StepBackResponse, args: DebugProtocol.StepBackArguments): void {
-    this._runtime.step(true);
+    // backward 1 step
+    this._runtime.stepOver(true);
+    this.sendResponse(response);
+  }
+
+  protected stepInRequest(response: DebugProtocol.StepInResponse, args: DebugProtocol.StepInArguments): void {
+    // forward 1 step
+    this._runtime.stepIn();
+    this.sendResponse(response);
+  }
+
+  protected stepOutRequest(response: DebugProtocol.StepOutResponse, args: DebugProtocol.StepOutArguments): void {
+    // forward 1 step
+    this._runtime.stepOut();
     this.sendResponse(response);
   }
 
