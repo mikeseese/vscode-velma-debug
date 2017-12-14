@@ -35,6 +35,7 @@
     "Debuggers"
   ],
   "dependencies": {
+    "bignumber.js": "5.0.0",
     "circular-json": "^0.4.0",
     "events": "^1.1.1",
     "path": "^0.12.7",
