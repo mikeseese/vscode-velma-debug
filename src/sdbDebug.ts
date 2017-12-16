@@ -255,8 +255,10 @@ class SolidityDebugSession extends LoggingDebugSession {
       }
     }*/
 
+    reply = this._runtime.evaluate(args.expression, args.context, args.frameId);
+
     response.body = {
-      result: reply ? reply : `evaluate(context: '${args.context}', '${args.expression}')`,
+      result: reply,
       variablesReference: 0
     };
     this.sendResponse(response);
