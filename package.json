@@ -39,6 +39,7 @@
     "circular-json": "^0.4.0",
     "events": "^1.1.1",
     "path": "^0.12.7",
+    "solc": "0.4.19",
     "vscode-debugadapter": "^1.25.0",
     "vscode-debugprotocol": "^1.25.0"
   },
