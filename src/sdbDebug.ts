@@ -230,8 +230,6 @@ class SolidityDebugSession extends LoggingDebugSession {
   // TODO: allow for evaluation/arbitrary code execution
   protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
 
-    let reply: string | undefined = undefined;
-
     /*if (args.context === 'repl') {
       // 'evaluate' supports to create and delete breakpoints from the 'repl':
       const matches = /new +([0-9]+)/.exec(args.expression);
@@ -255,13 +253,13 @@ class SolidityDebugSession extends LoggingDebugSession {
       }
     }*/
 
-    reply = this._runtime.evaluate(args.expression, args.context, args.frameId);
-
-    response.body = {
-      result: reply,
-      variablesReference: 0
-    };
-    this.sendResponse(response);
+    this._runtime.evaluate(args.expression, args.context, args.frameId, (reply) => {
+      response.body = {
+        result: reply,
+        variablesReference: 0
+      };
+      this.sendResponse(response);
+    });
   }
 
   //---- helpers
