@@ -6,7 +6,8 @@ import {
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { LibSdb, SdbBreakpoint } from '../../solidity-debugger/libsdb';
+import { LibSdbRuntime } from '../../solidity-debugger/src/runtime';
+import { LibSdbTypes } from '../../solidity-debugger/src/types';
 
 
 /**
@@ -28,7 +29,7 @@ class SolidityDebugSession extends LoggingDebugSession {
   private static THREAD_ID = 1;
 
   // a Mock runtime (or debugger)
-  private _runtime: LibSdb;
+  private _runtime: LibSdbRuntime;
 
   private _variableHandles = new Handles<string>();
 
@@ -43,7 +44,7 @@ class SolidityDebugSession extends LoggingDebugSession {
     this.setDebuggerLinesStartAt1(false);
     this.setDebuggerColumnsStartAt1(false);
 
-    this._runtime = new LibSdb();
+    this._runtime = new LibSdbRuntime();
 
     // setup event handlers
     this._runtime.on('stopOnEntry', () => {
@@ -64,7 +65,7 @@ class SolidityDebugSession extends LoggingDebugSession {
     this._runtime.on('stopOnException', () => {
       this.sendEvent(new StoppedEvent('exception', SolidityDebugSession.THREAD_ID));
     });
-    this._runtime.on('breakpointValidated', (bp: SdbBreakpoint) => {
+    this._runtime.on('breakpointValidated', (bp: LibSdbTypes.Breakpoint) => {
       this.sendEvent(new BreakpointEvent('changed', <DebugProtocol.Breakpoint>{ verified: bp.verified, id: bp.id }));
     });
     this._runtime.on('output', (text, filePath, line, column) => {
@@ -124,11 +125,11 @@ class SolidityDebugSession extends LoggingDebugSession {
     const clientLines = args.lines || [];
 
     // clear all breakpoints for this file
-    this._runtime.clearBreakpoints(path);
+    this._runtime._breakpoints.clearBreakpoints(path);
 
     // set and verify breakpoint locations
     const actualBreakpoints = clientLines.map(l => {
-      let { verified, line, id } = this._runtime.setBreakPoint(path, this.convertClientLineToDebugger(l));
+      let { verified, line, id } = this._runtime._breakpoints.setBreakPoint(path, this.convertClientLineToDebugger(l));
       const bp = <DebugProtocol.Breakpoint> new Breakpoint(verified, this.convertDebuggerLineToClient(line));
       bp.id= id;
       return bp;
@@ -253,7 +254,7 @@ class SolidityDebugSession extends LoggingDebugSession {
       }
     }*/
 
-    this._runtime.evaluate(args.expression, args.context, args.frameId, (reply) => {
+    this._runtime._evaluator.evaluate(args.expression, args.context, args.frameId, (reply) => {
       response.body = {
         result: reply,
         variablesReference: 0
