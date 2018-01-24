@@ -112,7 +112,7 @@ class SolidityDebugSession extends LoggingDebugSession {
     logger.setup(args.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
     // start the program in the runtime
-    this._runtime.attach("localhost", 8455, () => { // TODO: get args from better place
+    this._runtime._interface.attach("localhost", 8455, () => { // TODO: get args from better place
       this._runtime.start(!!args.stopOnEntry);
     });
 
