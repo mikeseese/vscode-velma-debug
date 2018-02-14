@@ -1,6 +1,6 @@
 import {
   Logger, logger,
-  DebugSession, LoggingDebugSession,
+  DebugSession,
   InitializedEvent, TerminatedEvent, StoppedEvent, BreakpointEvent, OutputEvent,
   Thread, StackFrame, Scope, Source, Handles, Breakpoint
 } from 'vscode-debugadapter';
@@ -23,7 +23,7 @@ interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
   trace?: boolean;
 }
 
-class SolidityDebugSession extends LoggingDebugSession {
+class SolidityDebugSession extends DebugSession {
 
   // we don't support multiple threads, so we can use a hardcoded ID for the default thread
   private static THREAD_ID = 1;
@@ -38,7 +38,7 @@ class SolidityDebugSession extends LoggingDebugSession {
    * We configure the default implementation of a debug adapter here.
    */
   public constructor() {
-    super("sdb-debug.txt");
+    super();
 
     // this debugger uses zero-based lines and columns
     this.setDebuggerLinesStartAt1(false);
