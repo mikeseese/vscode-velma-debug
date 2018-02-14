@@ -1,6 +1,6 @@
 {
   "name": "vscode-sdb-debug",
-  "displayName": "Solidity Debug",
+  "displayName": "Solidity Debugger",
   "version": "0.0.1",
   "publisher": "seesemichaelj",
   "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
@@ -11,20 +11,7 @@
   "keywords": [
     "solidity",
     "debug",
-    "debugger",
-    "sol",
-    "eth",
     "ethereum",
-    "vs",
-    "vscode",
-    "code",
-    "visual",
-    "studio",
-    "visual",
-    "studio",
-    "code",
-    "extension",
-    "adapter",
     "sdb"
   ],
   "engines": {
@@ -42,6 +29,7 @@
     "path": "^0.12.7",
     "solc": "^0.4.18",
     "traverse": "0.6.6",
+    "uuid": "^3.2.1",
     "vscode-debugadapter": "^1.25.0",
     "vscode-debugprotocol": "^1.25.0",
     "ws": "4.0.0"
@@ -79,8 +67,8 @@
     "debuggers": [
       {
         "type": "sdb",
-        "label": "Solidity Debug",
-        "program": "./out/sdbDebug.js",
+        "label": "Solidity Debugger",
+        "program": "./out/vscode-sdb-debug/src/sdbDebug.js",
         "runtime": "node",
         "configurationAttributes": {
           "launch": {
