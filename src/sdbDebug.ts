@@ -6,8 +6,8 @@ import {
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { LibSdbRuntime } from '../../solidity-debugger/src/runtime';
-import { LibSdbTypes } from '../../solidity-debugger/src/types';
+import { LibSdbRuntime } from 'solidity-debugger';
+import { LibSdbTypes } from 'solidity-debugger';
 
 
 /**

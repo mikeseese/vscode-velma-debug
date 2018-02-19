@@ -22,17 +22,10 @@
     "Debuggers"
   ],
   "dependencies": {
-    "@types/ws": "^4.0.0",
-    "bignumber.js": "5.0.0",
-    "circular-json": "^0.4.0",
-    "events": "^1.1.1",
     "path": "^0.12.7",
-    "solc": "^0.4.18",
-    "traverse": "0.6.6",
-    "uuid": "^3.2.1",
+    "solidity-debugger": "git+ssh://git@gitlab.com/seeseplusplus/solidity-debugger.git",
     "vscode-debugadapter": "^1.25.0",
-    "vscode-debugprotocol": "^1.25.0",
-    "ws": "4.0.0"
+    "vscode-debugprotocol": "^1.25.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.44",
