@@ -24,30 +24,34 @@
   "dependencies": {
     "path": "^0.12.7",
     "solidity-debugger": "git+ssh://git@gitlab.com/seeseplusplus/solidity-debugger.git",
+    "vscode": "^1.1.6",
     "vscode-debugadapter": "^1.25.0",
     "vscode-debugprotocol": "^1.25.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.44",
     "@types/node": "^8.0.54",
+    "fs": "0.0.1-security",
+    "ganache-core": "git+https://github.com/seeseplusplus/ganache-core.git#introduce-sdb",
     "mocha": "^3.5.0",
+    "solc": "^0.4.20",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3",
     "vsce": "^1.34.0",
-    "vscode": "^1.1.6",
-    "vscode-debugadapter-testsupport": "^1.25.0"
+    "vscode-debugadapter-testsupport": "^1.25.0",
+    "web3": "^1.0.0-beta.30"
   },
   "scripts": {
     "prepublish": "tsc -p ./src",
     "compile": "tsc -p ./src",
     "tslint": "tslint ./src/**/*.ts",
     "watch": "tsc -w -p ./src",
-    "test": "mocha -u tdd ./out/tests/",
+    "test": "mocha --inspect-brk -u tdd ./out/test/",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "package": "vsce package",
     "publish": "vsce publish"
   },
-  "main": "./out/vscode-sdb-debug/src/sdbExtension",
+  "main": "./out/src/sdbExtension",
   "activationEvents": [
     "onDebug"
   ],
@@ -61,7 +65,7 @@
       {
         "type": "sdb",
         "label": "Solidity Debugger",
-        "program": "./out/vscode-sdb-debug/src/sdbDebug.js",
+        "program": "./out/src/sdbDebug.js",
         "runtime": "node",
         "configurationAttributes": {
           "launch": {
