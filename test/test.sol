@@ -38,11 +38,11 @@ contract Test {
         return v;
     }
 
-    function test5(uint _val) public {
+    function test5() public {
         uint256 newVal = 108;
         uint256 nextVal = newVal / 2;
         newVal += 1;
-        uint256 priorVal = nextVal * _val;
+        uint256 priorVal = nextVal * 2;
         a = test5a(priorVal);
     }
 
