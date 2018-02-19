@@ -20,12 +20,35 @@
       "program": "${workspaceFolder}/src/sdbDebug.ts",
       "args": [ "--server=4711" ],
       "outFiles": [ "${workspaceFolder}/out/**/*.js" ]
-    }
+    },
+    {
+      "type": "sdb",
+      "request": "launch",
+      "name": "Debug Solidity",
+      // "debugServer": 4711,
+      "stopOnEntry": false
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Tests",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "test",
+        "--inspect=60000",
+        "--debug-brk"
+      ],
+      "port": 9229
+    },
   ],
   "compounds": [
     {
       "name": "Extension + Server",
       "configurations": [ "Extension", "Server" ]
+    },
+    {
+      "name": "SDB + Test",
+      "configurations": [ "Debug Solidity", "Tests" ]
     }
   ]
 }
