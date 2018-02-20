@@ -1,13 +1,13 @@
 import { provider } from "ganache-core";
 import { CompilerInput, CompilerOutput, compileStandardWrapper } from "solc";
-import { resolve as resolvePath } from "path";
+import { join as joinPath } from "path";
 import { readFileSync } from "fs";
 
 const Web3 = require("web3");
 
 describe("SdbTest", () => {
-    const sourceRoot = resolvePath(__dirname, "../../test/");
-    const contractPath = resolvePath(sourceRoot, "test.sol");
+    const sourceRoot = joinPath(__dirname, "../../test/");
+    const contractPath = joinPath(sourceRoot, "test.sol");
     let web3;
     let ganacheProvider;
     let compilerOutput: CompilerOutput;
