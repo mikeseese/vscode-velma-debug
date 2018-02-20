@@ -26,6 +26,12 @@ For the scope of the [Augur bounty](https://github.com/AugurProject/augur-bounti
 
 I **highly recommend** you familiarize yourself with the test application found within this repository before integrating your own project.
 
+### Dev Dependencies Only
+After cloning this repository, you will need to install the dev dependencies. You won't be able to install the normal dependencies since the debugger runtime is currently closed source. You can do this by executing:
+```bash
+npm install --only=dev
+```
+
 ### Launch Configuration
 Since this extension doesn't handle the compilation and linking of your contracts for your, you must treat it's launch configuration as an `attach` configuration (but the type is actually `launch`). You can see the launch configuration setup for this [test application](https://gitlab.com/seeseplusplus/vscode-sdb-debug/blob/master/test/test.ts) can be found in [.vscode/launch.json](https://gitlab.com/seeseplusplus/vscode-sdb-debug/blob/master/.vscode/launch.json#L24-30). You can/should ignore the `debugServer` property and keep it commented out/removed; it's used for development purposes. Also in that file you can see a compound configuration which runs both my `Debug Solidity` and `Tests` configurations; this gives me the ability to just press `F5`/run to get started quickly.
 
