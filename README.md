@@ -1,6 +1,13 @@
 # SDB VS Code Extension
 This repository contains the VS Code extension which integrates with the [Solidity Debugger (SDB)](https://gitlab.com/seeseplusplus/solidity-debugger) (repository closed source until the [Augur bounty](https://github.com/AugurProject/augur-bounties#-bounty-2-portable-solidity-debugger) is claimed). Design and implementation decisions for MVP v1.0.0 were heavily guided by the needs of Augur and Augur's application.
 
+## Prerequisites
+You must install a Solidity language VS Code extension; I suggest the one from Juan Blanco. I **suggest** that you change the keyboard shortcut this extension uses to compile the Solidity file as it defaults to `F5` and inhibits smooth debugging (if you left the default `F5` command for continuing while in a debug session). You can do this following the below instructions:
+1. Press Ctrl+Shift+P (or Command+Shift+P) to open the settings quick open popup
+1. Search for and open `Preferences: Open Keyboard Shortcuts` (with the preceeding `>` that should already be entered)
+1. In the search box in the `Keyboard Shortcuts` tab, search for `solidity.compile.active`
+1. Click the edit pencil on the left of the row and enter a different keyboard shortcut that isn't `F5`
+
 ## Installing the extension (which includes the debugger)
 1. Go to https://gitlab.com/seeseplusplus/vscode-sdb-debug/tags and navigate to the latest versioned tag
 1. Download the attached vscode-sdb-debug-x.y.z.vsix file
