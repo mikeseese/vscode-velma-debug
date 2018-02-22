@@ -181,10 +181,8 @@ class SolidityDebugSession extends DebugSession {
     this.sendResponse(response);
   }
 
-  protected variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments): void {
-
-
-    const variables = this._runtime.variables();
+  protected async variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments): Promise<void> {
+    const variables = await this._runtime.variables();
 
     response.body = {
       variables: variables
