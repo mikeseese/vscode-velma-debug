@@ -119,21 +119,23 @@ class SolidityDebugSession extends DebugSession {
     this.sendResponse(response);
   }
 
-  protected setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): void {
+  protected async setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): Promise<void> {
 
     const path = <string>args.source.path;
     const clientLines = args.lines || [];
 
     // clear all breakpoints for this file
-    this._runtime._breakpoints.clearBreakpoints(path);
+    await this._runtime._breakpoints.clearBreakpoints(path);
 
     // set and verify breakpoint locations
-    const actualBreakpoints = clientLines.map(l => {
-      let { verified, line, id } = this._runtime._breakpoints.setBreakPoint(path, this.convertClientLineToDebugger(l));
+    let actualBreakpoints: DebugProtocol.Breakpoint[] = [];
+    for (let i = 0; i < clientLines.length; i++) {
+      const l = clientLines[i];
+      let { verified, line, id } = await this._runtime._breakpoints.setBreakPoint(path, this.convertClientLineToDebugger(l));
       const bp = <DebugProtocol.Breakpoint> new Breakpoint(verified, this.convertDebuggerLineToClient(line));
-      bp.id= id;
-      return bp;
-    });
+      bp.id = id;
+      actualBreakpoints.push(bp);
+    }
 
     // send back the actual breakpoint positions
     response.body = {
