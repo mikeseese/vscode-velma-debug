@@ -19,10 +19,10 @@ You must install a Solidity language VS Code extension; I suggest the one from J
 1. Reload VS Code
 
 ## Current Limitations (of both SDB and SDB VS Code Extension)
-- Currently only basic array (1-Dimensional, fixed-size (i.e. not dynamic)) variable inspection support.
+- Currently only basic array (1-Dimensional, fixed-size (i.e. not dynamic)) variable inspection support for memory variables.
     - Note: Other types are not difficult, but in the interest of time, this shows proof of concept that the functionality is implemented. More advanced memory types (including structs) are just a matter of basic programming implementation but is time consuming to handle each scenario. I believe this implemented functionality should be able to qualify for for MVP bounty claim, and the others will be implemented shortly. If I wasn't pressed on time due to Truffle devs showing up from no where claiming to almost be complete, I would not provide this build until it was mainly supported. `test6` in the [sample project](https://gitlab.com/seeseplusplus/sdb-sample) can demonstrate this functionality.
-- No storage variable inspection support (will be supported in v0.3.0 in the coming days [as of 2/20/2018])
-    - Note: This is currently under work and mostly just tedious implementation of the different types and supporting correct visualization within the extension.
+- Currently only basic array (1-Dimensional, fixed-size (i.e. not dynamic)) variable inspection support for state variables.
+    - See above note for memory variables
 - No `hover` REPL/Debug Console viewing support
 - No backwards stepping support (will be supported in v0.4.0 in the next week [as of 2/20/2018])
 - Port between SDB and Ganache is hardcoded to `8455`
