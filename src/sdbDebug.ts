@@ -131,7 +131,7 @@ class SolidityDebugSession extends DebugSession {
     let actualBreakpoints: DebugProtocol.Breakpoint[] = [];
     for (let i = 0; i < clientLines.length; i++) {
       const l = clientLines[i];
-      let { verified, line, id } = await this._runtime._breakpoints.setBreakPoint(path, this.convertClientLineToDebugger(l));
+      let { verified, line, id } = await this._runtime._breakpoints.setBreakpoint(path, this.convertClientLineToDebugger(l));
       const bp = <DebugProtocol.Breakpoint> new Breakpoint(verified, this.convertDebuggerLineToClient(line));
       bp.id = id;
       actualBreakpoints.push(bp);
@@ -235,7 +235,7 @@ class SolidityDebugSession extends DebugSession {
       // 'evaluate' supports to create and delete breakpoints from the 'repl':
       const matches = /new +([0-9]+)/.exec(args.expression);
       if (matches && matches.length === 2) {
-        const mbp = this._runtime.setBreakPoint(this._runtime.sourceFile, this.convertClientLineToDebugger(parseInt(matches[1])));
+        const mbp = this._runtime.setBreakpoint(this._runtime.sourceFile, this.convertClientLineToDebugger(parseInt(matches[1])));
         const bp = <DebugProtocol.Breakpoint> new Breakpoint(mbp.verified, this.convertDebuggerLineToClient(mbp.line), undefined, this.createSource(this._runtime.sourceFile));
         bp.id= mbp.id;
         this.sendEvent(new BreakpointEvent('new', bp));
