@@ -21,6 +21,8 @@ interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
   stopOnEntry?: boolean;
   /** enable logging the Debug Adapter Protocol */
   trace?: boolean;
+  /** change which port talks to ganache-core **/
+  port?: number;
 }
 
 class SolidityDebugSession extends DebugSession {
@@ -112,7 +114,7 @@ class SolidityDebugSession extends DebugSession {
     logger.setup(args.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
     // start the program in the runtime
-    this._runtime._interface.serve("127.0.0.1", 8455, () => { // TODO: get args from better place
+    this._runtime._interface.serve("127.0.0.1", args.port || 8455, () => { // TODO: get args from better place
       this._runtime.start(!!args.stopOnEntry);
     });
 

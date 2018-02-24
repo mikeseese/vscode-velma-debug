@@ -74,6 +74,11 @@
                 "type": "boolean",
                 "description": "Enable logging of the Debug Adapter Protocol.",
                 "default": true
+              },
+              "port": {
+                "type": "number",
+                "description": "This is the port that is used to communicate with TestRPC/Ganache-Core",
+                "default": 8455
               }
             }
           }
@@ -83,7 +88,8 @@
             "type": "sdb",
             "request": "launch",
             "name": "Debug Solidity",
-            "stopOnEntry": false
+            "stopOnEntry": false,
+            "port": 8455
           }
         ],
         "configurationSnippets": [
@@ -94,7 +100,8 @@
               "type": "sdb",
               "request": "launch",
               "name": "Debug Solidity",
-              "stopOnEntry": false
+              "stopOnEntry": false,
+              "port": 8455
             }
           }
         ],
