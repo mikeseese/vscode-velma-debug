@@ -6,8 +6,8 @@ import {
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { LibSdbRuntime } from 'solidity-debugger';
 import { LibSdbTypes } from 'solidity-debugger';
+import { SdbRuntimeInterface } from './sdbRuntimeInterface';
 
 
 /**
@@ -21,7 +21,9 @@ interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
   stopOnEntry?: boolean;
   /** enable logging the Debug Adapter Protocol */
   trace?: boolean;
-  /** change which port talks to ganache-core **/
+  /** change which host talks to sdb **/
+  host?: string;
+  /** change which port talks to sdb **/
   port?: number;
 }
 
@@ -31,7 +33,7 @@ class SolidityDebugSession extends DebugSession {
   private static THREAD_ID = 1;
 
   // a Mock runtime (or debugger)
-  private _runtime: LibSdbRuntime;
+  private _runtime: SdbRuntimeInterface;
 
   private _variableHandles = new Handles<string>();
 
@@ -46,7 +48,7 @@ class SolidityDebugSession extends DebugSession {
     this.setDebuggerLinesStartAt1(false);
     this.setDebuggerColumnsStartAt1(false);
 
-    this._runtime = new LibSdbRuntime();
+    this._runtime = new SdbRuntimeInterface();
 
     // setup event handlers
     this._runtime.on('stopOnEntry', () => {
@@ -108,15 +110,13 @@ class SolidityDebugSession extends DebugSession {
     this.sendResponse(response);
   }
 
-  protected launchRequest(response: DebugProtocol.LaunchResponse, args: LaunchRequestArguments): void {
+  protected async launchRequest(response: DebugProtocol.LaunchResponse, args: LaunchRequestArguments): Promise<void> {
 
     // make sure to 'Stop' the buffered logging if 'trace' is not set
     logger.setup(args.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
     // start the program in the runtime
-    this._runtime._interface.serve("127.0.0.1", args.port || 8455, () => { // TODO: get args from better place
-      this._runtime.start(!!args.stopOnEntry);
-    });
+    await this._runtime.attach(args.host || "127.0.0.1", args.port || 8455);
 
     this.sendResponse(response);
   }
@@ -127,16 +127,18 @@ class SolidityDebugSession extends DebugSession {
     const clientLines = args.lines || [];
 
     // clear all breakpoints for this file
-    await this._runtime._breakpoints.clearBreakpoints(path);
+    await this._runtime.clearBreakpoints(path);
 
     // set and verify breakpoint locations
     let actualBreakpoints: DebugProtocol.Breakpoint[] = [];
     for (let i = 0; i < clientLines.length; i++) {
       const l = clientLines[i];
-      let { verified, line, id } = await this._runtime._breakpoints.setBreakpoint(path, this.convertClientLineToDebugger(l));
-      const bp = <DebugProtocol.Breakpoint> new Breakpoint(verified, this.convertDebuggerLineToClient(line));
-      bp.id = id;
-      actualBreakpoints.push(bp);
+      const debuggerBreakpoint = await this._runtime.setBreakpoint(path, this.convertClientLineToDebugger(l));
+      if (debuggerBreakpoint) {
+        const bp = <DebugProtocol.Breakpoint> new Breakpoint(debuggerBreakpoint.verified, this.convertDebuggerLineToClient(debuggerBreakpoint.line));
+        bp.id = debuggerBreakpoint.id;
+        actualBreakpoints.push(bp);
+      }
     }
 
     // send back the actual breakpoint positions
@@ -157,18 +159,26 @@ class SolidityDebugSession extends DebugSession {
     this.sendResponse(response);
   }
 
-  protected stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): void {
+  protected async stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): Promise<void> {
 
     const startFrame = typeof args.startFrame === 'number' ? args.startFrame : 0;
     const maxLevels = typeof args.levels === 'number' ? args.levels : 1000;
     const endFrame = startFrame + maxLevels;
 
-    const stk = this._runtime.stack(startFrame, endFrame);
+    const stk = await this._runtime.stack(startFrame, endFrame);
 
-    response.body = {
-      stackFrames: stk.frames.map(f => new StackFrame(f.index, f.name, this.createSource(f.file), this.convertDebuggerLineToClient(f.line))),
-      totalFrames: stk.count
-    };
+    if (stk !== null) {
+      response.body = {
+        stackFrames: stk.frames.map(f => new StackFrame(f.index, f.name, this.createSource(f.file), this.convertDebuggerLineToClient(f.line))),
+        totalFrames: stk.count
+      };
+    }
+    else {
+      response.body = {
+        stackFrames: [],
+        totalFrames: 0
+      };
+    }
     this.sendResponse(response);
   }
 
@@ -202,7 +212,7 @@ class SolidityDebugSession extends DebugSession {
 
   protected reverseContinueRequest(response: DebugProtocol.ReverseContinueResponse, args: DebugProtocol.ReverseContinueArguments) : void {
     // backward continue until breakpoint
-    this._runtime.continue(true);
+    this._runtime.continueReverse();
     this.sendResponse(response);
    }
 
@@ -214,7 +224,7 @@ class SolidityDebugSession extends DebugSession {
 
   protected stepBackRequest(response: DebugProtocol.StepBackResponse, args: DebugProtocol.StepBackArguments): void {
     // backward 1 step
-    this._runtime.stepOver(true);
+    this._runtime.stepBack();
     this.sendResponse(response);
   }
 
@@ -231,7 +241,7 @@ class SolidityDebugSession extends DebugSession {
   }
 
   // TODO: allow for evaluation/arbitrary code execution
-  protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
+  protected async evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): Promise<void> {
 
     /*if (args.context === 'repl') {
       // 'evaluate' supports to create and delete breakpoints from the 'repl':
@@ -256,13 +266,12 @@ class SolidityDebugSession extends DebugSession {
       }
     }*/
 
-    this._runtime._evaluator.evaluate(args.expression, args.context, args.frameId, (reply) => {
-      response.body = {
-        result: reply,
-        variablesReference: 0
-      };
-      this.sendResponse(response);
-    });
+    const reply = await this._runtime.evaluate(args.expression, args.context, args.frameId);
+    response.body = {
+      result: reply,
+      variablesReference: 0
+    };
+    this.sendResponse(response);
   }
 
   //---- helpers
