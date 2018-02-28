@@ -24,9 +24,7 @@ You must install a Solidity language VS Code extension; I suggest the one from J
 - Currently only basic array (1-Dimensional, fixed-size (i.e. not dynamic)) variable inspection support for state variables.
     - See above note for memory variables
 - No `hover` REPL/Debug Console viewing support
-- No backwards stepping support (will be supported in the the coming day or two [as of 2/22/2018])
-- Port between SDB and Ganache is hardcoded to `8455`
-- Currently the debugger will step through stack variable declaration before executing instructions
+- No backwards stepping support
 - **Important**: Until my changes to 3rd party repos have been merged and released to NPM, you must use the associated GitHub links (using the `introduce-sdb` branch). You can find the supporting GitHub repositories at https://gitlab.com/seeseplusplus. You will only need to make this concession for [ganache-core](https://gitlab.com/seeseplusplus/vscode-sdb-debug/blob/master/package.json#L35) though.
 
 ## Sample project
