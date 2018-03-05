@@ -14,12 +14,14 @@ export class SdbRuntimeInterface extends EventEmitter {
     private _debuggerMessages: Map<string, Function | undefined>;
 
     private _connected: boolean;
+    private _disconnecting: boolean;
 
     constructor() {
         super();
 
         this._debuggerMessages = new Map<string, Function | undefined>();
         this._connected = false;
+        this._disconnecting = false;
     }
 
     public async clearBreakpoints(path: string): Promise<void> {
@@ -250,36 +252,48 @@ export class SdbRuntimeInterface extends EventEmitter {
         const retryPeriod = 10000;
         console.log("Retrying to connect to debugger in " + retryPeriod + " milliseconds...");
         await sleep(retryPeriod);
-        await this.attach(host, port);
+        if (!this._disconnecting) {
+            await this.attach(host, port);
+        }
         resolve();
+    }
+
+    public disconnect() {
+        this._disconnecting = true;
+        this._ws.close();
     }
 
     public async attach(host: string, port: number): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            const url = "ws://" + host + ":" + port;
-            this._ws = new WebSocket(url, {
-                "handshakeTimeout": 10000
-            });
+            if (!this._disconnecting) {
+                const url = "ws://" + host + ":" + port;
+                this._ws = new WebSocket(url, {
+                    "handshakeTimeout": 10000
+                });
 
-            this._ws.on("open", () => {
-                this._connected = true;
-                console.log("connected to debugger");
+                this._ws.on("open", () => {
+                    this._connected = true;
+                    console.log("connected to debugger");
+                    resolve();
+                });
+
+                this._ws.on("message", (message) => {
+                    this.handleMessage(message);
+                });
+
+                this._ws.on("error", (error) => {
+                    if (!this._connected) {
+                        this._ws.removeAllListeners();
+                        this.reconnect(host, port, resolve);
+                    }
+                    else {
+                        throw new Error(JSON.stringify(error));
+                    }
+                });
+            }
+            else {
                 resolve();
-            });
-
-            this._ws.on("message", (message) => {
-                this.handleMessage(message);
-            });
-
-            this._ws.on("error", (error) => {
-                if (!this._connected) {
-                    this._ws.removeAllListeners();
-                    this.reconnect(host, port, resolve);
-                }
-                else {
-                    throw new Error(JSON.stringify(error));
-                }
-            });
+            }
         });
     }
 

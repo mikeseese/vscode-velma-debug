@@ -115,8 +115,14 @@ class SolidityDebugSession extends DebugSession {
     // make sure to 'Stop' the buffered logging if 'trace' is not set
     logger.setup(args.trace ? Logger.LogLevel.Verbose : Logger.LogLevel.Stop, false);
 
+    this.sendResponse(response);
+
     // start the program in the runtime
     await this._runtime.attach(args.host || "127.0.0.1", args.port || 8455);
+  }
+
+  protected async disconnectRequest(response: DebugProtocol.DisconnectResponse, args: DebugProtocol.DisconnectArguments) {
+    this._runtime.disconnect();
 
     this.sendResponse(response);
   }
