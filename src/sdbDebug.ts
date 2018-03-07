@@ -272,12 +272,29 @@ class SolidityDebugSession extends DebugSession {
       }
     }*/
 
-    const reply = await this._runtime.evaluate(args.expression, args.context, args.frameId);
-    response.body = {
-      result: reply,
-      variablesReference: 0
-    };
-    this.sendResponse(response);
+    if (args.context === undefined) {
+      // copy value
+      let result = "";
+      const variables: DebugProtocol.Variable[] = await this._runtime.variables();
+      for (const variable of variables) {
+        if (variable.evaluateName === args.expression) {
+          result = variable.value;
+        }
+      }
+      response.body = {
+        result: result,
+        variablesReference: 0
+      };
+      this.sendResponse(response);
+    }
+    else {
+      const reply = await this._runtime.evaluate(args.expression, args.context, args.frameId);
+      response.body = {
+        result: reply,
+        variablesReference: 0
+      };
+      this.sendResponse(response);
+    }
   }
 
   //---- helpers

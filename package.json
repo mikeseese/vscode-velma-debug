@@ -1,7 +1,7 @@
 {
   "name": "vscode-sdb-debug",
   "displayName": "Solidity Debugger",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "publisher": "SeesePlusPlus",
   "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
   "author": {
