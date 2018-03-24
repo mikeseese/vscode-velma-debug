@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import * as WebSocket from "ws";
 import { LibSdbTypes } from 'solidity-debugger';
+import { DebugProtocol } from 'vscode-debugprotocol';
 
 const uuidv4 = require("uuid").v4;
 
@@ -77,7 +78,7 @@ export class SdbRuntimeInterface extends EventEmitter {
         });
     }
 
-    public async variables(): Promise<any> {
+    public async variables(args: DebugProtocol.VariablesArguments): Promise<any> {
         await this.waitForConnection();
         return new Promise<any>((resolve, reject) => {
             // only send if it's an open connection
@@ -85,7 +86,7 @@ export class SdbRuntimeInterface extends EventEmitter {
                 "id": uuidv4(),
                 "isRequest": true,
                 "type": "variables",
-                "content": {}
+                "content": args
             };
             const message = JSON.stringify(payload);
             this._ws.send(message);

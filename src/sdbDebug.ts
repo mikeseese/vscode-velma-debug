@@ -202,11 +202,10 @@ class SolidityDebugSession extends DebugSession {
   }
 
   protected async variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments): Promise<void> {
-    const variables = await this._runtime.variables();
-
     response.body = {
-      variables: variables
+      variables: await this._runtime.variables(args)
     };
+
     this.sendResponse(response);
   }
 
@@ -288,11 +287,7 @@ class SolidityDebugSession extends DebugSession {
       this.sendResponse(response);
     }
     else {
-      const reply = await this._runtime.evaluate(args.expression, args.context, args.frameId);
-      response.body = {
-        result: reply,
-        variablesReference: 0
-      };
+      response.body = await this._runtime.evaluate(args.expression, args.context, args.frameId);
       this.sendResponse(response);
     }
   }
