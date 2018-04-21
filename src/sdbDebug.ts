@@ -2,11 +2,11 @@ import {
   Logger, logger,
   DebugSession,
   InitializedEvent, TerminatedEvent, StoppedEvent, BreakpointEvent, OutputEvent,
-  Thread, StackFrame, Scope, Source, Handles, Breakpoint
+  Thread, StackFrame, Scope, Source, Breakpoint
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { LibSdbTypes } from 'solidity-debugger';
+import { LibSdbTypes, LibSdbConstants } from 'solidity-debugger';
 import { SdbRuntimeInterface } from './sdbRuntimeInterface';
 
 
@@ -35,7 +35,7 @@ class SolidityDebugSession extends DebugSession {
   // a Mock runtime (or debugger)
   private _runtime: SdbRuntimeInterface;
 
-  private _variableHandles = new Handles<string>();
+  private _scopes: Array<Scope>;
 
   /**
    * Creates a new debug adapter that is used for one debug session.
@@ -49,6 +49,12 @@ class SolidityDebugSession extends DebugSession {
     this.setDebuggerColumnsStartAt1(false);
 
     this._runtime = new SdbRuntimeInterface();
+
+    this._scopes = new Array<Scope>();
+    this._scopes.push(new Scope(LibSdbConstants.ScopeTypes.local.name, LibSdbConstants.ScopeTypes.local.frame, false));
+    this._scopes.push(new Scope(LibSdbConstants.ScopeTypes.state.name, LibSdbConstants.ScopeTypes.state.frame, false));
+    // TODO: this._scopes.push(new Scope(LibSdbConstants.ScopeTypes.global.name, LibSdbConstants.ScopeTypes.global.frame, false));
+    this._scopes.push(new Scope(LibSdbConstants.ScopeTypes.dev.name, LibSdbConstants.ScopeTypes.dev.frame, false));
 
     // setup event handlers
     this._runtime.on('stopOnEntry', () => {
@@ -189,15 +195,10 @@ class SolidityDebugSession extends DebugSession {
   }
 
   protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {
-
-    const frameReference = args.frameId;
-    const scopes = new Array<Scope>();
-    scopes.push(new Scope("Local", this._variableHandles.create("local_" + frameReference), false));
-    scopes.push(new Scope("Global", this._variableHandles.create("global_" + frameReference), true));
-
     response.body = {
-      scopes: scopes
+      scopes: this._scopes
     };
+
     this.sendResponse(response);
   }
 
