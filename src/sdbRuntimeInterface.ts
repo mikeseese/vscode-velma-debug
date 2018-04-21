@@ -78,7 +78,7 @@ export class SdbRuntimeInterface extends EventEmitter {
         });
     }
 
-    public async variables(args: DebugProtocol.VariablesArguments): Promise<any> {
+    public async variables(args?: DebugProtocol.VariablesArguments): Promise<any> {
         await this.waitForConnection();
         return new Promise<any>((resolve, reject) => {
             // only send if it's an open connection
@@ -86,7 +86,7 @@ export class SdbRuntimeInterface extends EventEmitter {
                 "id": uuidv4(),
                 "isRequest": true,
                 "type": "variables",
-                "content": args
+                "content": args || null
             };
             const message = JSON.stringify(payload);
             this._ws.send(message);
