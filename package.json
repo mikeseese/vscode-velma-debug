@@ -1,7 +1,7 @@
 {
   "name": "vscode-sdb-debug",
   "displayName": "Solidity Debugger",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "publisher": "SeesePlusPlus",
   "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
   "author": {
@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "path": "^0.12.7",
-    "solidity-debugger": "git+ssh://gitlab.com:seeseplusplus/solidity-debugger.git",
+    "solidity-debugger": "git+ssh://git@gitlab.com/seeseplusplus/solidity-debugger.git",
     "vscode": "^1.1.6",
     "vscode-debugadapter": "^1.25.0",
     "vscode-debugprotocol": "^1.25.0",
