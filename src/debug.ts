@@ -6,8 +6,8 @@ import {
 } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { basename } from 'path';
-import { LibSdbTypes, LibSdbConstants } from 'solidity-debugger';
-import { SdbRuntimeInterface } from './sdbRuntimeInterface';
+import { LibSdbTypes, LibSdbConstants } from 'velma';
+import { SdbRuntimeInterface } from './runtimeInterface';
 
 
 /**
