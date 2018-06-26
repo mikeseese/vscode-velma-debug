@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import * as WebSocket from "ws";
-import { LibSdbTypes } from 'solidity-debugger';
+import { LibSdbTypes } from 'velma';
 import { DebugProtocol } from 'vscode-debugprotocol';
 
 const uuidv4 = require("uuid").v4;
