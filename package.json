@@ -1,9 +1,9 @@
 {
-  "name": "vscode-sdb-debug",
-  "displayName": "Solidity Debugger",
+  "name": "vscode-velma-debug",
+  "displayName": "Velma Solidity Debug Adapter",
   "version": "1.0.0-rc.1",
   "publisher": "SeesePlusPlus",
-  "description": "Visual Studio Code debug adapter for the sdb (Solidity Debugger) runtime",
+  "description": "Visual Studio Code debug adapter for the Velma Solidity Debugger runtime",
   "author": {
     "name": "Mike Seese",
     "email": "seesemichaelj@gmail.com"
