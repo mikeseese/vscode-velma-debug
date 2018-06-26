@@ -1,6 +1,9 @@
 # <img src="https://user-images.githubusercontent.com/549323/41639879-a6eeb290-742d-11e8-8ece-bb1c292b407a.png" alt="" width="100" height="auto" valign="middle"> Velma Solidity Debugger - VS Code Extension
 This repository contains the VS Code extension which integrates with the [Velma Solidity Debugger](https://github.com/seeseplusplus/velma). Design and implementation decisions for MVP v1.0.0 were heavily guided by the needs of Augur and Augur's application.
 
+## Get Status Updates About Releases!
+Follow me on Twitter at https://twitter.com/seeseplusplus to get updates about new releases/etc about Velma
+
 ## Submitting Issues
 Unless you know for certain the issue belongs in this repository, please submit issues related to the Velma Debugger at the [debugger main repo](https://github.com/seeseplusplus/velma/issues)
 
