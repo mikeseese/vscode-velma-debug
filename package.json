@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "path": "^0.12.7",
-    "solidity-debugger": "https://gitlab.com/seeseplusplus/solidity-debugger.git#sdb-1.0.0-rc.1",
+    "solidity-debugger": "https://github.com/seeseplusplus/velma.git#1.0.0-rc.1",
     "vscode": "^1.1.6",
     "vscode-debugadapter": "^1.25.0",
     "vscode-debugprotocol": "^1.25.0",
